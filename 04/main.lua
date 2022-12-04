@@ -52,3 +52,27 @@ for _, value in ipairs(elf_asignments) do
 end
 
 print(overlap_count)
+
+-- PART 2
+---check if elf workload overlap at all
+---@param first_elf string
+---@param second_elf string
+---@return integer
+local function validate_elfs_workload(first_elf, second_elf)
+  local first_elf_tasks = elf_asignment_borders(first_elf)
+  local second_elf_tasks = elf_asignment_borders(second_elf)
+  if first_elf_tasks[1] >= second_elf_tasks[1] and first_elf_tasks[1] <= second_elf_tasks[2] then
+    return 1
+  elseif second_elf_tasks[1] >= first_elf_tasks[1] and second_elf_tasks[1] <= first_elf_tasks[2] then
+    return 1
+  end
+  return 0
+end
+
+local overlap_count = 0
+for _, value in ipairs(elf_asignments) do
+  local elf_pair = separate_elfs(value)
+  overlap_count = overlap_count + validate_elfs_workload(elf_pair[1], elf_pair[2])
+end
+
+print(overlap_count)
