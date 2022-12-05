@@ -10,24 +10,18 @@
 -- [L] [C] [W] [C] [P] [T] [M] [Z] [W]
 --  1   2   3   4   5   6   7   8   9
 
-local starting_crate_positions = {
-  [1] = { "D", "T", "W", "N", "L" },
-  [2] = { "H", "P", "C" },
-  [3] = { "J", "M", "G", "D", "N", "H", "P", "W", },
-  [4] = { "L", "Q", "T", "N", "S", "W", "C", },
-  [5] = { "N", "C", "H", "P", },
-  [6] = { "B", "Q", "W", "M", "D", "N", "H", "T", },
-  [7] = { "L", "S", "G", "J", "R", "B", "M", },
-  [8] = { "T", "R", "B", "V", "G", "W", "N", "Z", },
-  [9] = { "L", "P", "N", "D", "G", "W", },
-}
-
 --- define stack and its methods
 Stack = {}
 Stack.__index = Stack
----Create new, empty stack
+---Create Stack with some data in it, if input == nil returns empty table
+---@param list table
 ---@return table
-function Stack.new() return setmetatable({}, Stack) end
+function Stack:new(list)
+  if list == nil then return {} end
+  local data = list
+  setmetatable(data, Stack)
+  return data
+end
 
 ---Add item on top of a stack
 ---@param item any
@@ -41,20 +35,6 @@ function Stack:pop()
   assert(#self > 0, "Stack is empty")
   local output = self[#self]
   self[#self] = nil
-  return output
-end
-
----Create table build from stacks
----@param stack_input table
----@return table
-local function load_stack(stack_input)
-  local output = {}
-  for i = 1, #stack_input do
-    output[i] = Stack:new()
-    for j = #stack_input[i], 1, -1 do
-      output[i]:push(stack_input[i][j])
-    end
-  end
   return output
 end
 
@@ -79,11 +59,21 @@ local function parse_crate_movement(crate_movement)
   return { crate_operations[2], crate_operations[4], crate_operations[6], }
 end
 
+local crate_operations = read_crate_movement()
+local crate_stack = {
+  [1] = Stack:new({ "D", "T", "W", "N", "L" }),
+  [2] = Stack:new({ "H", "P", "C" }),
+  [3] = Stack:new({ "J", "M", "G", "D", "N", "H", "P", "W", }),
+  [4] = Stack:new({ "L", "Q", "T", "N", "S", "W", "C", }),
+  [5] = Stack:new({ "N", "C", "H", "P", }),
+  [6] = Stack:new({ "B", "Q", "W", "M", "D", "N", "H", "T", }),
+  [7] = Stack:new({ "L", "S", "G", "J", "R", "B", "M", }),
+  [8] = Stack:new({ "T", "R", "B", "V", "G", "W", "N", "Z", }),
+  [9] = Stack:new({ "L", "P", "N", "D", "G", "W", }),
+}
 
-local crate_movement = read_crate_movement()
-local crate_stack = load_stack(starting_crate_positions)
-for i = 1, #crate_movement do
-  local move = parse_crate_movement(crate_movement[i])
+for i = 1, #crate_operations do
+  local move = parse_crate_movement(crate_operations[i])
   for _ = 1, tonumber(move[1]) do
     crate_stack[tonumber(move[3])]:push(crate_stack[tonumber(move[2])]:pop())
   end
@@ -96,10 +86,20 @@ end
 print(top_crates)
 
 -- PART 2
-local crate_movement = read_crate_movement()
-local crate_stack = load_stack(starting_crate_positions)
-for i = 1, #crate_movement do
-  local move = parse_crate_movement(crate_movement[i])
+local crate_operations = read_crate_movement()
+local crate_stack = {
+  [1] = Stack:new({ "D", "T", "W", "N", "L" }),
+  [2] = Stack:new({ "H", "P", "C" }),
+  [3] = Stack:new({ "J", "M", "G", "D", "N", "H", "P", "W", }),
+  [4] = Stack:new({ "L", "Q", "T", "N", "S", "W", "C", }),
+  [5] = Stack:new({ "N", "C", "H", "P", }),
+  [6] = Stack:new({ "B", "Q", "W", "M", "D", "N", "H", "T", }),
+  [7] = Stack:new({ "L", "S", "G", "J", "R", "B", "M", }),
+  [8] = Stack:new({ "T", "R", "B", "V", "G", "W", "N", "Z", }),
+  [9] = Stack:new({ "L", "P", "N", "D", "G", "W", }),
+}
+for i = 1, #crate_operations do
+  local move = parse_crate_movement(crate_operations[i])
   local popped_crates = {}
   -- use pop to remove top crates
   for _ = 1, tonumber(move[1]) do
