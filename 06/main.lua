@@ -1,7 +1,6 @@
 -- PART 1
 local function read_stream()
-  local file = io.open("06/input.txt", "r")
-  if file == nil then return "" end
+  local file = assert(io.open("06/input.txt", "r"))
   local output = file:read("*a")
   file:close()
   return output
@@ -10,9 +9,7 @@ end
 local function is_unique(str)
   for i = 1, #str do
     local _, n = str:gsub(str:sub(i, i), "")
-    if n > 1 then
-      return false
-    end
+    if n > 1 then return false end
   end
   return true
 end
