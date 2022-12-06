@@ -7,10 +7,6 @@ local function read_stream()
   return output
 end
 
-local stream_table = {}
-local stream = read_stream()
-_ = stream:gsub(".", function(c) table.insert(stream_table, c) end)
-
 local function is_unique(t)
   local str = table.concat(t)
   for _, value in ipairs(t) do
@@ -22,30 +18,27 @@ local function is_unique(t)
   return true
 end
 
-local function substream(t, from, to)
+local function substream(str, from, to)
   local output = {}
-  for index, value in ipairs(t) do
-    if index >= from and index <= to then
-      table.insert(output, value)
-    end
-    if index >= to then
-      return output
-    end
+  for i=from, to do
+    table.insert(output, str:sub(i, i))
   end
   return output
 end
 
-for index, _ in ipairs(stream_table) do
-  if is_unique(substream(stream_table, index, index + 3)) == true then
-    print(index + 3)
+local stream = read_stream()
+
+for i =1, #stream do
+  if is_unique(substream(stream,i, i + 3)) == true then
+    print(i + 3)
     break
   end
 end
 
 -- PART 2
-for index, _ in ipairs(stream_table) do
-  if is_unique(substream(stream_table, index, index + 13)) == true then
-    print(index + 13)
+for i =1, #stream do
+  if is_unique(substream(stream, i, i+13)) == true then
+    print(i + 13)
     break
   end
 end
