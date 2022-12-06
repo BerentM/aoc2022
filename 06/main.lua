@@ -8,12 +8,8 @@ local function read_stream()
 end
 
 local function is_unique(str)
-  local t = {}
   for i = 1, #str do
-    table.insert(t, str:sub(i, i))
-  end
-  for _, value in ipairs(t) do
-    local _, n = str:gsub(value, "")
+    local _, n = str:gsub(str:sub(i, i), "")
     if n > 1 then
       return false
     end
