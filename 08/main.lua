@@ -24,29 +24,21 @@ end
 
 local unpack = unpack or table.unpack
 
-local function side_max(row, column)
-  local max_right = math.max(unpack(forest_matrix[row], column + 1, #forest_matrix[row]))
-  local max_left = math.max(unpack(forest_matrix[row], 1, column - 1))
-  return { max_right, max_left }
-end
-
-local function up_down_max(row, column)
-  local forest_column = {}
-  for i = 1, #forest_matrix do
-    table.insert(forest_column, forest_matrix[i][column])
-  end
-  local top_max = math.max(unpack(forest_column, 1, row - 1))
-  local bottom_max = math.max(unpack(forest_column, row + 1, #forest_matrix))
-  return { top_max, bottom_max }
-end
-
 local visible_trees = 0
 for r = 2, #forest_matrix[1] - 1 do
   for c = 2, #forest_matrix - 1 do
+    local forest_column = {}
+    for i = 1, #forest_matrix do
+      table.insert(forest_column, forest_matrix[i][c])
+    end
+
     local current_tree = forest_matrix[r][c]
-    local max_right, max_left = unpack(side_max(r, c))
-    local up_max, down_max = unpack(up_down_max(r, c))
-    if current_tree > max_right or current_tree > max_left or current_tree > up_max or current_tree > down_max then
+    local right = math.max(unpack(forest_matrix[r], c + 1, #forest_matrix[r]))
+    local left = math.max(unpack(forest_matrix[r], 1, c - 1))
+    local up = math.max(unpack(forest_column, 1, r - 1))
+    local down = math.max(unpack(forest_column, r + 1, #forest_matrix))
+
+    if current_tree > right or current_tree > left or current_tree > up or current_tree > down then
       visible_trees = visible_trees + 1
     end
   end
