@@ -62,3 +62,38 @@ end
 print(output)
 
 -- PART 2
+local X = 1
+local cycle = 1
+local ans = { {}, {}, {}, {}, {}, {} }
+
+local CRT = { 1 }
+
+for i = 1, #display_instructions do
+  local instruction = mysplit(display_instructions[i])
+  if instruction[1] == "noop" then
+    cycle = cycle + 1
+    CRT[cycle] = X
+  elseif instruction[1] == "addx" then
+    cycle = cycle + 1
+    CRT[cycle] = X
+
+    cycle = cycle + 1
+    X = X + instruction[2]
+    CRT[cycle] = X
+  end
+end
+
+for row = 0, 5 do
+  for col = 0, 39 do
+    local counter = row * 40 + col + 2
+    if math.abs(CRT[counter - 1] - col) <= 1 then
+      ans[row + 1][col + 1] = "##"
+    else
+      ans[row + 1][col + 1] = "  "
+    end
+  end
+end
+
+for _, value in ipairs(ans) do
+  print(table.concat(value))
+end
